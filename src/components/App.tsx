@@ -13,13 +13,13 @@ const AppWrap = styled.div`
 `;
 
 const App: React.FC = () => {
-  const [expenses, setExpenses] = useLocalStorage<Expense[]>('expenses', []);
+  const [expenses, setExpenses] = useLocalStorage<Expense[]>('expenses', [])
 
   const nextId = React.useMemo(() => {
-    if (!expenses || expenses.length === 0) return 1;
-    const maxId = Math.max(...expenses.map((e: Expense) => e.id));
-    return maxId + 1;
-  }, [expenses]);
+    if (expenses.length === 0) return 1;
+    const maxId = Math.max(...expenses.map((e:Expense)=>e.id))
+    return maxId + 1
+  }, [expenses])
 
   const handleAdd = (expense: Expense) => {
     setExpenses([...expenses, expense]);
