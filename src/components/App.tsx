@@ -15,32 +15,29 @@ const AppWrap = styled.div`
 const App: React.FC = () => {
   const [expenses, setExpenses] = useLocalStorage<Expense[]>('expenses', [])
 
-  const nextId = React.useMemo(() => {
+  const nextId = React.useMemo(()=> {
     if (expenses.length === 0) return 1;
-    const maxId = Math.max(...expenses.map((e:Expense)=>e.id))
-    return maxId + 1
-  }, [expenses])
+    const maxId = Math.max(...expenses.map((e:Expense) => e.id))
+    return maxId + 1;
+  },[expenses])
 
   const handleAdd = (expense: Expense) => {
-    setExpenses([...expenses, expense]);
+    setExpenses([...expenses, expense])
   };
 
   const handleRemove = (id: number) => {
-    setExpenses(expenses.filter((e: Expense) => e.id !== id));
-  };
+    setExpenses(expenses.filter((e:Expense) => e.id !== id))
+  }
 
-  const handleToggleImportant = (id: number) => {
-    setExpenses(
-      expenses.map((e: Expense) =>
-        e.id === id ? { ...e, important: !e.important } : e
-      )
-    );
-  };
+ const handleToggleImportant = (id: number) => {
+  setExpenses(
+    expenses.map((e: Expense) => 
+    e.id === id ? {...e, important: !e.important} : e
+    ) 
+  )
+ }
 
-  const totalAll = expenses.reduce(
-    (sum: number, e: Expense) => sum + e.amount,
-    0
-  );
+  const totalAll = expenses.reduce((sum:number, e: Expense) => sum = e.amount, 0)
 
   return (
     <AppWrap>
