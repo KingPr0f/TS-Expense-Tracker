@@ -1,5 +1,5 @@
 export interface Expense {
-  id: number;
+  id: string;               // теперь строка, как в Firestore
   description: string;
   amount: number;
   category: string;

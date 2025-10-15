@@ -4,8 +4,8 @@ import ExpenseItem from './ExpenseItem';
 
 interface ExpenseListProps {
   expenses: Expense[];
-  onRemove: (id: number) => void;
-  onToggleImportant: (id: number) => void;
+  onRemove: (id: string) => void;
+  onToggleImportant: (id: string, important: boolean) => void;
 }
 
 const ExpenseList: React.FC<ExpenseListProps> = ({
@@ -32,4 +32,3 @@ const ExpenseList: React.FC<ExpenseListProps> = ({
 };
 
 export default ExpenseList;
-

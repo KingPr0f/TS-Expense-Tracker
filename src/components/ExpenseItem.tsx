@@ -4,8 +4,8 @@ import { Expense } from '../types';
 
 interface ExpenseItemProps {
   expense: Expense;
-  onRemove: (id: number) => void;
-  onToggleImportant: (id: number) => void;
+  onRemove: (id: string) => void;
+  onToggleImportant: (id: string, important: boolean) => void;
 }
 
 const Item = styled.div<{ important?: boolean }>`
@@ -28,12 +28,12 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({
   return (
     <Item important={expense.important}>
       <div>
-        <strong>{expense.description}</strong> — {expense.amount}₽  
-        <em> ({expense.category})</em>  
+        <strong>{expense.description}</strong> — {expense.amount}₽
+        <em> ({expense.category})</em>
         <span> {expense.date}</span>
       </div>
       <div>
-        <button onClick={() => onToggleImportant(expense.id)}>
+        <button onClick={() => onToggleImportant(expense.id, !!expense.important)}>
           ⭐
         </button>
         <button onClick={() => onRemove(expense.id)}>Удалить</button>

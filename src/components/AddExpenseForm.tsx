@@ -37,11 +37,10 @@ const Button = styled.button`
 `;
 
 interface AddExpenseFormProps {
-  onAdd: (expense: Expense) => void;
-  nextId: number;
+  onAdd: (expense: Omit<Expense, "id">) => void;
 }
 
-const AddExpenseForm: React.FC<AddExpenseFormProps> = ({ onAdd, nextId }) => {
+const AddExpenseForm: React.FC<AddExpenseFormProps> = ({ onAdd }) => {
   const [description, setDescription] = React.useState('');
   const [amount, setAmount] = React.useState<number>(0);
   const [category, setCategory] = React.useState('');
@@ -54,8 +53,7 @@ const AddExpenseForm: React.FC<AddExpenseFormProps> = ({ onAdd, nextId }) => {
       return;
     }
 
-    const newExpense: Expense = {
-      id: nextId,
+    const newExpense: Omit<Expense, "id"> = {
       description: description.trim(),
       amount,
       category: category.trim(),
@@ -64,6 +62,7 @@ const AddExpenseForm: React.FC<AddExpenseFormProps> = ({ onAdd, nextId }) => {
     };
 
     onAdd(newExpense);
+
     setDescription('');
     setAmount(0);
     setCategory('');
