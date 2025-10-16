@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import {
   LineChart,
   Line,
@@ -11,23 +12,48 @@ import {
 import { Expense } from "../types";
 import dayjs from "dayjs";
 
-/**
- * Компонент для отображения графика расходов
- * Группирует все траты по дате и строит график "дата — сумма"
- */
 interface Props {
   expenses: Expense[];
 }
 
+const ChartContainer = styled.div`
+  width: 100%;
+  height: 400px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-top: 10px;
+
+  h3 {
+    text-align: center;
+    margin-bottom: 16px;
+    font-size: 1.4rem;
+  }
+
+  @media (max-width: 768px) {
+    height: 320px;
+    padding: 10px;
+
+    h3 {
+      font-size: 1.1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    height: 280px;
+    padding: 8px;
+  }
+`;
+
 const ExpenseChart: React.FC<Props> = ({ expenses }) => {
-  // Группируем по дате
+  // группируем по дате
   const grouped = expenses.reduce((acc, e) => {
     const date = e.date || dayjs().format("YYYY-MM-DD");
     acc[date] = (acc[date] || 0) + e.amount;
     return acc;
   }, {} as Record<string, number>);
 
-  // Преобразуем в массив для Recharts
   const data = Object.keys(grouped)
     .sort()
     .map((date) => ({
@@ -36,25 +62,32 @@ const ExpenseChart: React.FC<Props> = ({ expenses }) => {
     }));
 
   if (data.length === 0) {
-    return <p>Нет данных для отображения</p>;
+    return <p style={{ textAlign: "center" }}>Нет данных для отображения</p>;
   }
 
   return (
-    <div style={{ width: "100%", height: 400 }}>
+    <ChartContainer>
       <h3>📊 График расходов по дням</h3>
-      <ResponsiveContainer>
-        <LineChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+      <ResponsiveContainer width="100%" height="90%">
+        <LineChart
+          data={data}
+          margin={{ top: 10, right: 20, left: -10, bottom: 0 }}
+        >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="date" />
           <YAxis />
           <Tooltip formatter={(v) => `${v} ₽`} labelFormatter={(v) => `Дата: ${v}`} />
-          <Line type="monotone" dataKey="amount" stroke="#1890ff" strokeWidth={2} />
+          <Line
+            type="monotone"
+            dataKey="amount"
+            stroke="#1890ff"
+            strokeWidth={2}
+            dot={{ r: 3 }}
+          />
         </LineChart>
       </ResponsiveContainer>
-    </div>
+    </ChartContainer>
   );
 };
 
 export default ExpenseChart;
-
-console.log("ExpenseChart module loaded");

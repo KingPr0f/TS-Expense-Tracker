@@ -1,107 +1,138 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Expense } from '../types';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { Input, InputNumber, Button, Select, DatePicker } from "antd";
+import dayjs from "dayjs";
+import { Expense } from "../types";
 
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  max-width: 400px;
-  margin: 20px auto;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  background: #f9f9f9;
-`;
-
-const Input = styled.input`
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-`;
-
-const Button = styled.button`
-  padding: 12px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-
-  &:hover {
-    background: #0056b3;
-  }
-`;
-
-interface AddExpenseFormProps {
+interface Props {
   onAdd: (expense: Omit<Expense, "id">) => void;
 }
 
-const AddExpenseForm: React.FC<AddExpenseFormProps> = ({ onAdd }) => {
-  const [description, setDescription] = React.useState('');
-  const [amount, setAmount] = React.useState<number>(0);
-  const [category, setCategory] = React.useState('');
-  const [date, setDate] = React.useState('');
+const FormWrap = styled.form`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  background: #fff;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px;
+    gap: 8px;
+  }
+`;
+
+const Field = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+  flex: 1;
+
+  label {
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+    color: #555;
+  }
+
+  input,
+  .ant-input-number,
+  .ant-picker,
+  .ant-select {
+    width: 100%;
+  }
+`;
+
+const AddButton = styled(Button)`
+  align-self: flex-end;
+  height: 40px;
+  font-weight: 500;
+
+  @media (max-width: 480px) {
+    width: 100%;
+    height: 45px;
+  }
+`;
+
+const AddExpenseForm: React.FC<Props> = ({ onAdd }) => {
+  const [description, setDescription] = useState("");
+  const [amount, setAmount] = useState<number | null>(null);
+  const [category, setCategory] = useState("");
+  const [date, setDate] = useState(dayjs().format("YYYY-MM-DD"));
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!description.trim() || amount <= 0 || !category.trim() || !date) {
-      alert('Пожалуйста, заполните все поля корректно');
-      return;
-    }
+    if (!description || !amount || !category) return;
 
-    const newExpense: Omit<Expense, "id"> = {
-      description: description.trim(),
+    onAdd({
+      description,
       amount,
-      category: category.trim(),
+      category,
       date,
       important: false,
-    };
+    });
 
-    onAdd(newExpense);
-
-    setDescription('');
-    setAmount(0);
-    setCategory('');
-    setDate('');
+    setDescription("");
+    setAmount(null);
+    setCategory("");
+    setDate(dayjs().format("YYYY-MM-DD"));
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <h3>Добавить новый расход</h3>
-      <Input
-        type="text"
-        placeholder="Описание"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        required
-      />
-      <Input
-        type="number"
-        placeholder="Сумма"
-        value={amount || ''}
-        onChange={(e) => setAmount(Number(e.target.value))}
-        min="1"
-        required
-      />
-      <Input
-        type="text"
-        placeholder="Категория"
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-        required
-      />
-      <Input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-        required
-      />
-      <Button type="submit">Добавить расход</Button>
-    </Form>
+    <FormWrap onSubmit={handleSubmit}>
+      <Field>
+        <label>Описание</label>
+        <Input
+          placeholder="Например: Молоко"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+      </Field>
+
+      <Field>
+        <label>Сумма (₽)</label>
+        <InputNumber
+          placeholder="0"
+          min={1}
+          style={{ width: "100%" }}
+          value={amount ?? undefined}
+          onChange={(value) => setAmount(value ?? null)}
+        />
+      </Field>
+
+      <Field>
+        <label>Категория</label>
+        <Select
+          placeholder="Выбери категорию"
+          value={category || undefined}
+          onChange={setCategory}
+          options={[
+            { value: "Продукты", label: "🛒 Продукты" },
+            { value: "Кафе", label: "☕ Кафе" },
+            { value: "Транспорт", label: "🚗 Транспорт" },
+            { value: "Развлечения", label: "🎬 Развлечения" },
+            { value: "Другое", label: "📦 Другое" },
+          ]}
+        />
+      </Field>
+
+      <Field>
+        <label>Дата</label>
+        <DatePicker
+          style={{ width: "100%" }}
+          value={dayjs(date)}
+          onChange={(d) => setDate(d ? d.format("YYYY-MM-DD") : date)}
+        />
+      </Field>
+
+      <AddButton type="primary" htmlType="submit">
+        ➕ Добавить
+      </AddButton>
+    </FormWrap>
   );
 };
 

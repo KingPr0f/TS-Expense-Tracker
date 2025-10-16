@@ -30,7 +30,7 @@ export function useFirestoreExpenses(userId: string) {
 
   const addExpense = async (expense: Omit<Expense, "id">) => {
     const docRef = await addDoc(expensesCollection, { ...expense, userId });
-    setExpenses(prev => [...prev, { ...expense, id: docRef.id }]);
+    setExpenses(prev => [{ ...expense, id: docRef.id }, ...prev]);
   };
 
   const removeExpense = async (id: string) => {
