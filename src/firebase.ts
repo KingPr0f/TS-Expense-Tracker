@@ -1,6 +1,7 @@
 // firebase.ts
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 // Конфигурация Firebase твоего проекта
 const firebaseConfig = {
@@ -17,3 +18,8 @@ const app = initializeApp(firebaseConfig);
 
 // Экспорт Firestore для использования в хуках
 export const db = getFirestore(app);
+
+export const auth = getAuth(app);
+
+console.log("db:", db);
+console.log("auth:", auth);

@@ -1,6 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Expense } from '../types';
+import React from "react";
+import styled from "styled-components";
+import { Expense } from "../types";
 
 interface ExpenseItemProps {
   expense: Expense;
@@ -16,15 +16,10 @@ const Item = styled.div<{ important?: boolean }>`
   margin-bottom: 5px;
   border: 1px solid #ddd;
   border-radius: 6px;
-  background-color: ${({ important }) =>
-    important ? '#ffe0b2' : '#f9f9f9'};
+  background-color: ${({ important }) => (important ? "#ffe0b2" : "#f9f9f9")};
 `;
 
-const ExpenseItem: React.FC<ExpenseItemProps> = ({
-  expense,
-  onRemove,
-  onToggleImportant,
-}) => {
+const ExpenseItem: React.FC<ExpenseItemProps> = ({ expense, onRemove, onToggleImportant }) => {
   return (
     <Item important={expense.important}>
       <div>
@@ -33,10 +28,8 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({
         <span> {expense.date}</span>
       </div>
       <div>
-        <button onClick={() => onToggleImportant(expense.id, !!expense.important)}>
-          ⭐
-        </button>
-        <button onClick={() => onRemove(expense.id)}>Удалить</button>
+        <button onClick={() => onToggleImportant(expense.id!, expense.important || false)}>⭐</button>
+        <button onClick={() => onRemove(expense.id!)}>Удалить</button>
       </div>
     </Item>
   );

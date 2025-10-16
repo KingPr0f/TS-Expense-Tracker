@@ -1,6 +1,6 @@
-import React from 'react';
-import { Expense } from '../types';
-import ExpenseItem from './ExpenseItem';
+import React from "react";
+import { Card, Button, Tag, List } from "antd";
+import { Expense } from "../types";
 
 interface ExpenseListProps {
   expenses: Expense[];
@@ -8,26 +8,40 @@ interface ExpenseListProps {
   onToggleImportant: (id: string, important: boolean) => void;
 }
 
-const ExpenseList: React.FC<ExpenseListProps> = ({
-  expenses,
-  onRemove,
-  onToggleImportant,
-}) => {
-  if (expenses.length === 0) {
-    return <p>Пока нет расходов.</p>;
-  }
+const ExpenseList: React.FC<ExpenseListProps> = ({ expenses, onRemove, onToggleImportant }) => {
+  const sorted = [...expenses].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
 
   return (
-    <div>
-      {expenses.map((e) => (
-        <ExpenseItem
-          key={e.id}
-          expense={e}
-          onRemove={onRemove}
-          onToggleImportant={onToggleImportant}
-        />
-      ))}
-    </div>
+    <List
+      grid={{ gutter: 16, column: 2 }}
+      dataSource={sorted}
+      renderItem={(e) => (
+        <List.Item>
+          <Card
+            title={e.description}
+            extra={
+              <Tag color={e.important ? "red" : "blue"}>
+                {e.category || "Без категории"}
+              </Tag>
+            }
+          >
+            <p>💸 Сумма: {e.amount} ₽</p>
+            <p>📅 Дата: {e.date}</p>
+            <Button
+              type="link"
+              onClick={() => onToggleImportant(e.id!, e.important || false)}
+            >
+              {e.important ? "⭐ Убрать важность" : "☆ Сделать важным"}
+            </Button>
+            <Button danger type="link" onClick={() => onRemove(e.id!)}>
+              Удалить
+            </Button>
+          </Card>
+        </List.Item>
+      )}
+    />
   );
 };
 
